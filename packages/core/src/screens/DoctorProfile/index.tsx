@@ -61,7 +61,7 @@ const DoctorProfile: React.FC<RouteComponentProps> = ({ history }) => {
             color={Colors.lightGray}
             light
             text="Disponibilités"
-            containerStyle={{ marginBottom: 20 }}
+            style={{ marginBottom: 20 }}
             onPress={() => {
               history.push("DoctorAvailablities");
             }}

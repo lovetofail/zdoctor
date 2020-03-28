@@ -1,23 +1,23 @@
-import React from 'react';
-import {View, Text, ScrollView, RefreshControl} from 'react-native';
-import {ZTime} from '../../utils/ztime';
-import styles, {dayColStyles} from './styles';
+import React from "react";
+import { View, Text, ScrollView, RefreshControl } from "react-native";
+import { ZTime } from "../../utils/ztime";
+import styles, { dayColStyles } from "./styles";
 
-import DayColumn from './DayColumn';
-import {Colors} from '../../utils/values';
+import DayColumn from "./DayColumn";
+import { Colors } from "../../utils/values";
 import {
   getDayName,
   getMonthName,
   getDateFromString,
   getStringFromDate,
   dateRange,
-  isDateInRange,
-} from '../../utils/zdate';
-import Arrow from './Arrow';
-import {IDoctor} from '../../types';
-import Touchable from '../Touchable';
+  isDateInRange
+} from "../../utils/zdate";
+import Arrow from "./Arrow";
+import { IDoctor } from "../../types";
+import Touchable from "../Touchable";
 
-export type Hours = Array<{id: string; time: string} | string>;
+export type Hours = Array<{ id: string; time: string } | string>;
 
 export interface Sessions {
   [date: string]: Hours;
@@ -33,15 +33,15 @@ export type onHourPressFunction = (dayTime: Date, hour: ZTime) => void;
 export type onDayPressFunction = (day: Date) => void;
 
 export interface SessionPickerProps {
-  filterMode: 'taken' | 'available' | 'both';
+  filterMode: "taken" | "available" | "both";
   currentDate?: Date;
   dayCount?: 1 | 2 | 3 | 4 | 5;
   defaultStartingHour?: ZTime;
   defaultEndingHour?: ZTime;
   defaultSessionDuration?: number;
-  workingHours?: IDoctor['workingHours'];
-  sessionDurations?: IDoctor['sessionDurations'];
-  unavailablitites?: IDoctor['unavailablities'];
+  workingHours?: IDoctor["workingHours"];
+  sessionDurations?: IDoctor["sessionDurations"];
+  unavailablitites?: IDoctor["unavailablities"];
   allreadyTakenHours?: Sessions;
   onHourPress?: onHourPressFunction;
   onDayPress?: onDayPressFunction;
@@ -54,8 +54,8 @@ const SessionPicker: React.FC<SessionPickerProps> = ({
   filterMode,
   currentDate = new Date(),
   dayCount = 3,
-  defaultStartingHour = ZTime.fromString('08:00'),
-  defaultEndingHour = ZTime.fromString('17:00'),
+  defaultStartingHour = ZTime.fromString("08:00"),
+  defaultEndingHour = ZTime.fromString("17:00"),
   defaultSessionDuration = 30,
   workingHours = [],
   unavailablitites = [],
@@ -65,7 +65,7 @@ const SessionPicker: React.FC<SessionPickerProps> = ({
   onDayPress = () => {},
   onRefresh = () => {},
   onArrowRightPress = () => {},
-  onArrowLeftPress = () => {},
+  onArrowLeftPress = () => {}
 }) => {
   const dayColumnWidth = 80 / dayCount;
   const shownDatesRange = dateRange(currentDate, dayCount - 1);
@@ -78,7 +78,7 @@ const SessionPicker: React.FC<SessionPickerProps> = ({
     __allredyTakenHours[dateStr] = [];
     if (allreadyTakenHours[dateStr]) {
       __allredyTakenHours[dateStr] = allreadyTakenHours[dateStr].map(hour => {
-        if (typeof hour === 'string') {
+        if (typeof hour === "string") {
           return ZTime.fromString(hour);
         } else {
           return ZTime.fromString(hour.time, hour.id);
@@ -88,10 +88,10 @@ const SessionPicker: React.FC<SessionPickerProps> = ({
     filteredHours[dateStr] = filterHours(dateStr);
   }
 
-  function getWorkHours(date: Date): {startingHour: ZTime; endingHour: ZTime} {
+  function getWorkHours(date: Date): { startingHour: ZTime; endingHour: ZTime } {
     let range = {
       startingHour: defaultStartingHour,
-      endingHour: defaultEndingHour,
+      endingHour: defaultEndingHour
     };
     for (let wh of workingHours) {
       if (isDateInRange(date, wh.from, wh.to)) {
@@ -116,30 +116,18 @@ const SessionPicker: React.FC<SessionPickerProps> = ({
     let allreadyTakenHours = __allredyTakenHours[sessionDateKey];
     const sessionDate = getDateFromString(sessionDateKey);
 
-    let {startingHour, endingHour} = getWorkHours(sessionDate);
+    let { startingHour, endingHour } = getWorkHours(sessionDate);
 
     let sessionDuration = getSessionDuration(sessionDate);
     let filteredHours: Array<ZTime> = [];
 
     let _hour = startingHour.copy();
 
-    while (
-      _hour.isLess(endingHour) &&
-      endingHour.toMinutes() - _hour.toMinutes() >= sessionDuration
-    ) {
+    while (_hour.isLess(endingHour) && endingHour.toMinutes() - _hour.toMinutes() >= sessionDuration) {
       let isUnavailableHour = false;
       for (let unavailablity of unavailablitites) {
-        const sessionDateWithTime = new Date(
-          sessionDate.setHours(_hour.hours, _hour.minutes, 0, 0),
-        );
-        if (
-          isDateInRange(
-            sessionDateWithTime,
-            unavailablity.from,
-            unavailablity.to,
-            false,
-          )
-        ) {
+        const sessionDateWithTime = new Date(sessionDate.setHours(_hour.hours, _hour.minutes, 0, 0));
+        if (isDateInRange(sessionDateWithTime, unavailablity.from, unavailablity.to, false)) {
           isUnavailableHour = true;
           break;
         }
@@ -154,18 +142,18 @@ const SessionPicker: React.FC<SessionPickerProps> = ({
       }
 
       switch (filterMode) {
-        case 'available': {
+        case "available": {
           if (!_hour.unavailable && !_hour.id) {
             console.log(_hour);
             filteredHours.push(_hour);
           }
           break;
         }
-        case 'taken': {
+        case "taken": {
           if (_hour.id) filteredHours.push(_hour);
           break;
         }
-        case 'both':
+        case "both":
         default:
           filteredHours.push(_hour);
           break;
@@ -180,11 +168,12 @@ const SessionPicker: React.FC<SessionPickerProps> = ({
     return (
       <View
         style={{
-          flexDirection: 'row',
+          flexDirection: "row",
           height: 60,
-          alignItems: 'center',
-          backgroundColor: Colors.white,
-        }}>
+          alignItems: "center",
+          backgroundColor: Colors.white
+        }}
+      >
         <Arrow
           onPress={() => {
             onArrowLeftPress(currentDate);
@@ -200,16 +189,15 @@ const SessionPicker: React.FC<SessionPickerProps> = ({
                 onDayPress(date);
               }}
               key={dateKey}
-              containerStyle={{
+              style={{
                 width: `${dayColumnWidth}%`,
-                opacity: emptyDay ? 0.5 : 1,
-              }}>
+                opacity: emptyDay ? 0.5 : 1
+              }}
+            >
               <Text style={dayColStyles.day}>{getDayName(date)}</Text>
               <Text
-                style={[
-                  dayColStyles.month,
-                  emptyDay && {color: Colors.darkGray},
-                ]}>{`${date.getDate()} ${getMonthName(date)}`}</Text>
+                style={[dayColStyles.month, emptyDay && { color: Colors.darkGray }]}
+              >{`${date.getDate()} ${getMonthName(date)}`}</Text>
             </Touchable>
           );
         })}
@@ -226,18 +214,17 @@ const SessionPicker: React.FC<SessionPickerProps> = ({
     <View style={styles.container}>
       <DaysHeader />
       <ScrollView
-        style={{flex: 1}}
-        refreshControl={
-          <RefreshControl refreshing={false} onRefresh={onRefresh} />
-        }
-        contentContainerStyle={styles.hoursContainer}>
+        style={{ flex: 1 }}
+        refreshControl={<RefreshControl refreshing={false} onRefresh={onRefresh} />}
+        contentContainerStyle={styles.hoursContainer}
+      >
         {Object.keys(filteredHours).map(date => {
           // console.log(filteredHours[date]);
           return (
             <DayColumn
               filterMode={filterMode}
               width={dayColumnWidth}
-              key={'day-' + date}
+              key={"day-" + date}
               day={date}
               hours={filteredHours[date]}
               onHourPress={onHourPress}

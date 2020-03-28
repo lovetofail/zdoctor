@@ -4,13 +4,9 @@ import { Touchable } from "..";
 import { Colors } from "../../utils/values";
 import Icon from "../Icon";
 const arrowStyles = StyleSheet.create({
-  touchContainer: {
+  touch: {
     height: "100%",
     width: "10%",
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  touch: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center"
@@ -18,13 +14,7 @@ const arrowStyles = StyleSheet.create({
 });
 const Arrow: React.FC<{ left?: boolean; onPress: () => void }> = ({ left, onPress }) => {
   return (
-    <Touchable
-      borderRadius={0}
-      onPress={onPress}
-      containerStyle={arrowStyles.touchContainer}
-      borderRadiusViewStyle={{ width: "100%", flex: 1 }}
-      style={arrowStyles.touch}
-    >
+    <Touchable borderRadius={0} onPress={onPress} style={arrowStyles.touch}>
       <Icon
         style={{
           fontSize: 14,
