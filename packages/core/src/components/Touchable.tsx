@@ -1,6 +1,6 @@
 import React from "react";
 import { TouchableOpacity, TouchableOpacityProps, ViewStyle } from "react-native";
-import { mediumShadow } from "../utils/values";
+import { smallShadow } from "../utils/values";
 
 export type TouchableProps = TouchableOpacityProps & {
   borderRadius?: number;
@@ -10,7 +10,7 @@ export type TouchableProps = TouchableOpacityProps & {
 
 const Touchable: React.FC<TouchableProps> = ({ children, style, borderRadius = 5, shadow = false, ...props }) => {
   return (
-    <TouchableOpacity {...props} style={[style, { borderRadius }, shadow && mediumShadow]}>
+    <TouchableOpacity {...props} style={[{ borderRadius }, shadow && smallShadow, style]}>
       {children}
     </TouchableOpacity>
   );

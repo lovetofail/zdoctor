@@ -1,5 +1,5 @@
 import React from "react";
-import { Router, Route } from "./components/Router";
+import { Router, Route, Switch, Redirect } from "./components/Router";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Splash,
@@ -34,13 +34,11 @@ export default function Routes() {
           throw new Error("access token not found");
         }
         const userProfile = await getUser(accessToken);
-
         if (userType === "doctor") {
           dispatch(setDoctorAction(userProfile.doctor));
         } else {
           dispatch(setPatientAction(userProfile.patient));
         }
-
         setNeedAuth(false);
         setTimeout(() => {
           setIsLoading(false);
@@ -57,24 +55,34 @@ export default function Routes() {
   return (
     <>
       <Router>
-        {isLoading ? (
-          <Route exact path="/" component={Splash} />
-        ) : needAuth ? (
-          <Route exact path="/" component={Login} />
-        ) : userType === "patient" ? (
-          <>
-            <Route exact path="/" component={FindDoctor} />
-            <Route exact path="/ReservationCalendar" component={ReservationCalendar} />
-            <Route exact path="/PatientProfile" component={PatientProfile} />
-          </>
-        ) : (
-          <>
-            <Route exact path="/" component={DoctorCalendar} />
-            <Route exact path="/DoctorProfile" component={DoctorProfile} />
-            <Route exact path="/DoctorAvailablities" component={DoctorAvailablities} />
-            <Route exact path="/SessionDetail" component={SessionDetail} />
-          </>
-        )}
+        <Switch>
+          {isLoading ? (
+            <>
+              <Redirect from="*" to="/" />
+              <Route exact path="/" component={Splash} />
+            </>
+          ) : needAuth ? (
+            <>
+              <Redirect from="*" to="/login" />
+              <Route exact path="/login" component={Login} />
+            </>
+          ) : userType === "patient" ? (
+            <>
+              <Redirect from="*" to="/FindDoctor" />
+              <Route exact path="/FindDoctor" component={FindDoctor} />
+              <Route exact path="/ReservationCalendar" component={ReservationCalendar} />
+              <Route exact path="/PatientProfile" component={PatientProfile} />
+            </>
+          ) : (
+            <>
+              <Redirect from="*" to="/DoctorCalendar" />
+              <Route exact path="/DoctorCalendar" component={DoctorCalendar} />
+              <Route exact path="/DoctorProfile" component={DoctorProfile} />
+              <Route exact path="/DoctorAvailablities" component={DoctorAvailablities} />
+              <Route exact path="/SessionDetail" component={SessionDetail} />
+            </>
+          )}
+        </Switch>
       </Router>
       {!needAuth && <NotificationHandler />}
     </>

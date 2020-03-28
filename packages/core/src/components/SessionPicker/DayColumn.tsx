@@ -19,13 +19,14 @@ const DayColumn: React.FC<DayColumnProps> = ({ day, hours, width, onHourPress = 
     <View style={[dayColStyles.container, { width: `${width}%` }]}>
       {hours.map((hour, index) => {
         const isHourTaken = hour.id !== undefined;
+
         return (
           <Touchable
             shadow={!hour.unavailable}
             onPress={() => {
               onHourPress(ZTime.setDateAtTime(getDateFromString(day), hour), hour);
             }}
-            key={"hour-" + index}
+            key={`hour-${hour.unavailable ?? "unv"}${index}`}
             style={[
               { width: "90%", height: 70, marginVertical: 5 },
               dayColStyles.hour,

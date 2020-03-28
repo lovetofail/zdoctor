@@ -13,7 +13,7 @@ import { Colors } from "../../utils/values";
 import { doctorSelector, patientSelector } from "../../redux/selectors";
 import { setDoctorAction } from "../../redux/actions/doctorActions";
 
-import { RootStackParamList, IDoctor } from "../../types";
+import { IDoctor } from "../../types";
 import FoundDoctor from "./FoundDoctor";
 import { RouteComponentProps } from "react-router-dom";
 
