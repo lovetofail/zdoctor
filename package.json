@@ -23,6 +23,6 @@
     "typescript": "3.7.5"
   },
   "resolutions": {
-    "@react-native-community/cli-platform-android": "3.0.0"
+    "@react-native-community/cli-platform-android": "4.5.0"
   }
 }
